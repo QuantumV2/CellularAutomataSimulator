@@ -139,23 +139,16 @@ function updateGrid() {
     for (let j = 0; j < gridSize; j++) {
       //if (grid[i][j] < 0) { break; }
       const neighbors = countNeighbors(i, j);
-      if (grid[i][j] === 1) {
-        newGrid[i][j] = surviveRules.includes(neighbors) ? 1 : -refractoryPeriod;
+
+      if (grid[i][j] < 0) {
+        newGrid[i][j] = grid[i][j] - 1; // Decrease refractory period for cells with refractory period
+        if (newGrid[i][j] <= -refractoryPeriod - 1) {
+          newGrid[i][j] = 0; // Reset cell to 0 if it exceeds the limit
+        }
+      } else if (grid[i][j] === 1) {
+        newGrid[i][j] = surviveRules.includes(neighbors) ? 1 : -1;
       } else if (grid[i][j] === 0) {
         newGrid[i][j] = birthRules.includes(neighbors) ? 1 : 0;
-      }
-      // Decrease refractory period for cells with refractory period
-      if (refractoryPeriod !== 0 && newGrid[i][j] < 0) {
-        if (!starwarsRuleset) {
-          newGrid[i][j] += 1;
-        }
-        else if (starwarsRuleset && randomNumber(6) <= 3) {
-          newGrid[i][j] += 1;
-        }
-        // Reset refractory cells to inactive state when refractory period reaches 0
-      }
-      if (newGrid[i][j] === undefined) {
-        newGrid[i][j] = 0;
       }
     }
   }
