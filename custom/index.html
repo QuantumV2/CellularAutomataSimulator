@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Cellular Automaton Simulation</title>
+  <link rel="icon" type="image/x-icon" href="https://game-of-life-tomfoolery.quantumv.repl.co/favicon.png">
+  <style>
+    canvas {
+      border: 1px solid black;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="1000" height="1000"></canvas>
+  <br>
+  <button onclick="start()">Start Simulation</button>
+  <button onclick="download()">Download Image</button>
+  <button onclick="pause()">Pause / Unpause</button>
+  <br><br>
+  <label>Birth Condition: <input type="text" id="birthTextbox" value="3"></label>
+  <br>
+  <label>Survive Condition: <input type="text" id="surviveTextbox" value="2,3"></label>
+  <br>
+  <label>Neighborhood: <select name="neighboring" id="neighboring">
+    <option value="0">Moore Neighborhood</option>
+    <option value="1">0 Neighborhood</option>
+    <option value="2">Diagonal Neighborhood</option>
+    <option value="3">von Neumann Neighborhood</option>
+  </select></label>
+  <br>
+  <label>Refractory(Sleep) Period: <input type="number" id="refractoryTextbox" value="0"></label>
+  <br>
+  <label>Neighboring Radius: <input type="number" id="neighboringSizeTextbox" value="1"></label>
+  <script src="script.js"></script>
+</body>
+
+</html>
