@@ -182,7 +182,10 @@ function updateUrl() {
   neighborhoodTextbox.value = "" + neighboring;
   refractoryTextbox.value = refractoryPeriod;
   neighboringSizeTextbox.value = neighboringSize
-urlParams.set('randomrules', false);
+  if(urlParams.has('randomrules'))
+  {
+    urlParams.set('randomrules', false);
+  }
   const newUrl = window.location.pathname + '?' + urlParams.toString();
   history.pushState({}, '', newUrl);
 }
