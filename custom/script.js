@@ -212,24 +212,24 @@ refractoryTextbox.addEventListener('change', function() {
 });
 
 
-canvas.addEventListener('mousedown', function(event) {
+canvas.addEventListener('mousedown', function (event) {
   isDrawing = true;
   handleDrawing(event);
 });
 
-canvas.addEventListener('mousemove', function(event) {
+canvas.addEventListener('mousemove', function (event) {
   if (isDrawing) {
     handleDrawing(event);
   }
 });
 
-canvas.addEventListener('mouseup', function(event) {
+canvas.addEventListener('mouseup', function (event) {
   isDrawing = false;
   prevCellX = -1;
   prevCellY = -1;
 });
 
-canvas.addEventListener('mouseleave', function(event) {
+canvas.addEventListener('mouseleave', function (event) {
   isDrawing = false;
 });
 
@@ -250,29 +250,36 @@ function handleDrawing(event) {
 }
 
 function drawLine(x0, y0, x1, y1) {
-  const dx = Math.abs(x1 - x0);
-  const dy = Math.abs(y1 - y0);
-  const sx = x0 < x1 ? 1 : -1;
-  const sy = y0 < y1 ? 1 : -1;
-  let err = dx - dy;
-
-  while (x0 !== x1 || y0 !== y1) {
-    const e2 = 2 * err;
-    if (e2 > -dy) {
-      err -= dy;
-      x0 += sx;
-    }
-    if (e2 < dx) {
-      err += dx;
-      y0 += sy;
-    }
+  if(refractoryPeriod === 0)
+  {
     placeCell(x0, y0);
+    placeCell(x1, y1);
+  }
+  else
+  {
+    const dx = Math.abs(x1 - x0);
+    const dy = Math.abs(y1 - y0);
+    const sx = x0 < x1 ? 1 : -1;
+    const sy = y0 < y1 ? 1 : -1;
+    let err = dx - dy;
+
+    while (x0 !== x1 || y0 !== y1) {
+      const e2 = 2 * err;
+      if (e2 > -dy) {
+        err -= dy;
+        x0 += sx;
+      }
+      if (e2 < dx) {
+        err += dx;
+        y0 += sy;
+      }
+      placeCell(x0, y0);
+    }
   }
 }
 
 function placeCell(x, y) {
-  if(refractoryPeriod !== 0)
-  {
+  if (refractoryPeriod !== 0) {
     if (grid[x][y] === 0) {
       grid[x][y] = 1; // Set cell to alive
 
@@ -283,20 +290,18 @@ function placeCell(x, y) {
       grid[x][y] -= 1; // Subtract one if negative
 
     } if (grid[x][y] <= -refractoryPeriod - 1) {
-      grid[x][y] = 0; // Reset cell to 0 if it exceeds the limit
+      grid[x][y] = 0;
     }
   }
-  else
-  {
-      if (grid[x][y] === 0) {
-        grid[x][y] = 1; // Set cell to alive
+  else {
+    if (grid[x][y] === 0) {
+      grid[x][y] = 1;
 
-      } else if (grid[x][y] === 1) {
-        grid[x][y] = 0; // Set cell to dead
+    } else if (grid[x][y] === 1) {
+      grid[x][y] = 0;
 
-      }
+    }
   }
-  //console.log(x, y, grid[x][y]);
   drawGrid();
 }
 
