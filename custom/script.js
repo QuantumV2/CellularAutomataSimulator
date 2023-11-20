@@ -204,7 +204,7 @@ function updateUrl() {
   urlParams.set('survive', surviveRules.join('-'));
   urlParams.set('refractory', refractoryPeriod);
   urlParams.set('neighboring', neighboring);
-  urlParams.set('neighborsize', neighboringSize);
+  urlParams.set('neighboringsize', neighboringSize);
   birthTextbox.value = birthRules.join(',');
   surviveTextbox.value = surviveRules.join(',');
   neighborhoodTextbox.value = "" + neighboring;
