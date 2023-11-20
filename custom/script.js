@@ -271,17 +271,30 @@ function drawLine(x0, y0, x1, y1) {
 }
 
 function placeCell(x, y) {
-  if (grid[x][y] === 0) {
-    grid[x][y] = 1; // Set cell to alive
+  if(refractoryPeriod !== 0)
+  {
+    if (grid[x][y] === 0) {
+      grid[x][y] = 1; // Set cell to alive
 
-  } else if (grid[x][y] === 1) {
-    grid[x][y] = -1; // Set cell to -1 if active
+    } else if (grid[x][y] === 1) {
+      grid[x][y] = -1; // Set cell to -1 if active
 
-  } else if (grid[x][y] < 0) {
-    grid[x][y] -= 1; // Subtract one if negative
+    } else if (grid[x][y] < 0) {
+      grid[x][y] -= 1; // Subtract one if negative
 
-  } if (grid[x][y] <= -refractoryPeriod - 1) {
-    grid[x][y] = 0; // Reset cell to 0 if it exceeds the limit
+    } if (grid[x][y] <= -refractoryPeriod - 1) {
+      grid[x][y] = 0; // Reset cell to 0 if it exceeds the limit
+    }
+  }
+  else
+  {
+      if (grid[x][y] === 0) {
+        grid[x][y] = 1; // Set cell to alive
+
+      } else if (grid[x][y] === 1) {
+        grid[x][y] = 0; // Set cell to dead
+
+      }
   }
   //console.log(x, y, grid[x][y]);
   drawGrid();
