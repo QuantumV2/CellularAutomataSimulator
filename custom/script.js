@@ -336,7 +336,6 @@ function placeCell(x, y) {
 
     }
   }
-  drawGrid();
 }
 
 
