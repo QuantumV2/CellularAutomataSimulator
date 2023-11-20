@@ -1,4 +1,4 @@
-window.location.replace('/custom/index.html')
+window.location.replace('https://quantumv2.github.io/CellularAutomataSimulator/custom/index.html')
 
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');

@@ -146,7 +146,7 @@ function updateGrid() {
           newGrid[i][j] = 0; // Reset cell to 0 if it exceeds the limit
         }
       } else if (grid[i][j] === 1) {
-        newGrid[i][j] = surviveRules.includes(neighbors) ? 1 : -1;
+        newGrid[i][j] = surviveRules.includes(neighbors) ? 1 : (refractoryPeriod !== 0 ? -1 : 0);
       } else if (grid[i][j] === 0) {
         newGrid[i][j] = birthRules.includes(neighbors) ? 1 : 0;
       }
