@@ -24,16 +24,23 @@ let refractoryPeriod = parseInt(urlParams.get('refractory')) || 0;
 let randomRefractoryColor = urlParams.get('randrefractoryclr')?.toLowerCase() === "true" || false;
 let randomColor = urlParams.get('randomcolor')?.toLowerCase() === "true" || false;
 let starwarsRuleset = urlParams.get('starwars')?.toLowerCase() === "true" || false;
+let activeColor = urlParams.get('activecolor') || "000000";
+let inactiveColor = urlParams.get('inactivecolor') || "FFFFFF";
+let refractoryColor = urlParams.get('refractorycolor') || "000000";
 let isDrawing = false;
 let prevCellX = -1;
 let prevCellY = -1;
 
+let randWhiteColor = "rgba(" + randomNumber(255) + ", " + randomNumber(255) + ", " + randomNumber(255) + ", 1)";
+let randBlackColor = "rgba(" + randomNumber(255) + ", " + randomNumber(255) + ", " + randomNumber(255) + ", 1)";
+
+activeColor = "#" + activeColor;
+inactiveColor = "#" + inactiveColor;
+refractoryColor = "#" + refractoryColor;
 
 updateUrl();
 
 
-let randWhiteColor = "rgba(" + randomNumber(255) + ", " + randomNumber(255) + ", " + randomNumber(255) + ", 1)";
-let randBlackColor = "rgba(" + randomNumber(255) + ", " + randomNumber(255) + ", " + randomNumber(255) + ", 1)";
 
 
 if (randomColor) {
@@ -54,6 +61,8 @@ if (randomrules) {
   updateUrl();
   
 }
+
+
 
 canvas.width = size;
 canvas.height = size;
@@ -80,6 +89,15 @@ function createGrid() {
     }
   }
   return grid;
+}
+
+function hexToRgb(hex) {
+  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : null;
 }
 
 function getRandomArray(includeZero) {
@@ -111,13 +129,14 @@ function drawGrid() {
   for (let i = 0; i < gridSize; i++) {
     for (let j = 0; j < gridSize; j++) {
       if (!randomColor) {
-        ctx.fillStyle = simInverted ? (grid[i][j] ? 'white' : 'black') : (grid[i][j] ? 'black' : 'white');
+        ctx.fillStyle = simInverted ? (grid[i][j] ? inactiveColor : activeColor) : (grid[i][j] ? activeColor : inactiveColor);
       }
       else {
         ctx.fillStyle = simInverted ? (grid[i][j] ? randWhiteColor : randBlackColor) : (grid[i][j] ? randBlackColor : randWhiteColor);
       }
       if (grid[i][j] < 0 && !randomRefractoryColor) {
-        ctx.fillStyle = "rgba(0, 0, 0, " + normalize(grid[i][j], -refractoryPeriod - 1, 0) + ")";
+        var refractRGB = hexToRgb(refractoryColor);
+        ctx.fillStyle = "rgba(" + refractRGB.r + ", " + refractRGB.g + ", " + refractRGB.b + ", " + normalize(grid[i][j], -refractoryPeriod - 1, 0) + ")";
       }
       else if (grid[i][j] < 0 && randomRefractoryColor) {
         ctx.fillStyle = "rgba(" + randomNumber(255) + ", " + randomNumber(255) + ", " + randomNumber(255) + ", 1)";
@@ -181,11 +200,17 @@ function updateUrl() {
   surviveTextbox.value = surviveRules.join(',');
   neighborhoodTextbox.value = "" + neighboring;
   refractoryTextbox.value = refractoryPeriod;
-  neighboringSizeTextbox.value = neighboringSize
+  neighboringSizeTextbox.value = neighboringSize;
+  document.getElementById('color-picker').value = activeColor;
+  document.getElementById('color-picker1').value = inactiveColor;
+  document.getElementById('color-picker2').value = refractoryColor;
   if(urlParams.has('randomrules'))
   {
     urlParams.set('randomrules', false);
   }
+  urlParams.set('activecolor', activeColor.replace("#", ""));
+  urlParams.set('inactivecolor', inactiveColor.replace("#", ""));
+  urlParams.set('refractorycolor', refractoryColor.replace("#", ""));
   const newUrl = window.location.pathname + '?' + urlParams.toString();
   history.pushState({}, '', newUrl);
 }
@@ -304,6 +329,20 @@ function placeCell(x, y) {
   }
   drawGrid();
 }
+
+
+document.getElementById('color-picker').addEventListener('change', function (event) {
+  activeColor = event.target.value;
+  updateUrl();
+});
+document.getElementById('color-picker1').addEventListener('change', function (event) {
+  inactiveColor = event.target.value;
+  updateUrl();
+});
+document.getElementById('color-picker2').addEventListener('change', function (event) {
+  refractoryColor = event.target.value;
+  updateUrl();
+});
 
 function download() {
   /*const scaledCanvas = document.createElement("canvas");
