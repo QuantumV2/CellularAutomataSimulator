@@ -124,7 +124,7 @@ function randomNumber(number) {
 
 function drawGrid() {
   // Set the background color to white
-  ctx.fillStyle = "white";
+  ctx.fillStyle = inactiveColor;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < gridSize; i++) {
     for (let j = 0; j < gridSize; j++) {
