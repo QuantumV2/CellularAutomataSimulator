@@ -144,6 +144,9 @@ function drawGrid() {
       if (grid[i][j] > 1) {
         ctx.fillStyle = 'red';
       }
+      if (grid[i][j] === undefined) {
+        ctx.fillStyle = 'green';
+      }
       ctx.fillRect(i * cellSize, j * cellSize, cellSize, cellSize);
     }
   }
@@ -168,6 +171,12 @@ function updateGrid() {
         newGrid[i][j] = surviveRules.includes(neighbors) ? 1 : (refractoryPeriod !== 0 ? -1 : 0);
       } else if (grid[i][j] === 0) {
         newGrid[i][j] = birthRules.includes(neighbors) ? 1 : 0;
+      }
+
+      //failsafe for if they somehow get undefined idk how
+      if(newGrid[i][j] === undefined)
+      {
+        newGrid[i][j] = 0;
       }
     }
   }
