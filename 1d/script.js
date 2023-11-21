@@ -11,6 +11,8 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const cellSize = 10;
 
+updateUrl();
+
 canvas.width = size * cellSize;
 canvas.height = size * cellSize;
 
@@ -20,6 +22,7 @@ const height = size;
 if (randomrules) {
   rule = getRandomArray().join("-");
   updateUrl();
+  randomrules = false;
 }
 
 // Create a 2D grid
