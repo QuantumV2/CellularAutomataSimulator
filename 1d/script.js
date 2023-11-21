@@ -2,7 +2,7 @@
 const height = 100; // Height of the 2D grid*/
 // Parse URL parameters
 const urlParams = new URLSearchParams(window.location.search);
-const rule = urlParams.get('rule')?.split('-').map(Number) || [0,1,1,0,1,1,1,0]; // Rule for cell transitions
+let rule = urlParams.get('rule')?.split('-').map(Number) || [0,1,1,0,1,1,1,0]; // Rule for cell transitions
 let randomrules = urlParams.get('randomrules')?.toLowerCase() === "true" || false;
 let randomplace = urlParams.get('randomplace')?.toLowerCase() === "true" || false;
 let size = parseInt(urlParams.get('size')) || 100;
@@ -18,7 +18,8 @@ const width = size;
 const height = size;
 
 if (randomrules) {
-  window.location.href = "https://quantumv2.github.io/CellularAutomataSimulator/1d/index.html?rule=" + getRandomArray().join("-");
+  rule = getRandomArray().join("-");
+  updateUrl();
 }
 
 // Create a 2D grid
@@ -64,6 +65,18 @@ function getRandomArray() {
   }
   return binaryArray;
 }
+
+function updateUrl() {
+  
+  urlParams.set('rule', rule.join('-'));
+  if(urlParams.has('randomrules'))
+  {
+    urlParams.set('randomrules', false);
+  }
+  const newUrl = window.location.pathname + '?' + urlParams.toString();
+  history.pushState({}, '', newUrl);
+}
+
 
 for (let i = 0; i < height; i++) {
   for (let j = 0; j < width; j++) {
