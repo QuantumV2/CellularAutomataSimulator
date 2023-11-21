@@ -4,6 +4,7 @@ const height = 100; // Height of the 2D grid*/
 const urlParams = new URLSearchParams(window.location.search);
 const rule = urlParams.get('rule')?.split('-').map(Number) || [0,1,1,0,1,1,1,0]; // Rule for cell transitions
 let randomrules = urlParams.get('randomrules')?.toLowerCase() === "true" || false;
+let randomplace = urlParams.get('randomplace')?.toLowerCase() === "true" || false;
 let size = parseInt(urlParams.get('size')) || 100;
 //const rule = [0,1,1,0,1,1,1,0];
 const canvas = document.getElementById("canvas");
@@ -17,7 +18,7 @@ const width = size;
 const height = size;
 
 if (randomrules) {
-  window.location.href = "https://game-of-life-tomfoolery.quantumv.repl.co/1d/index.html?rule=" + getRandomArray().join("-");
+  window.location.href = "https://quantumv2.github.io/CellularAutomataSimulator/1d/index.html?rule=" + getRandomArray().join("-");
 }
 
 // Create a 2D grid
@@ -29,10 +30,20 @@ for (let i = 0; i < height; i++) {
   }
 }
 
-// Set the initial state of the 1D automaton in the middle row
-const middleRow = Math.floor(width / 2);
-grid[0][middleRow] = 1; // Randomly set cells to 0 or 1
+const middleRow = Math.floor(height / 2);
 
+if(randomplace)
+{
+// Set the initial state of the 1D automaton in the middle row
+for (let j = 0; j < width; j++) {
+  grid[middleRow][j] = Math.floor(Math.random() * 2); // Randomly set cells to 0 or 1
+    }
+}
+else
+{
+// Set the initial state of the 1D automaton in the middle row
+grid[0][middleRow] = 1; // Randomly set cells to 0 or 1
+}
 // Update the grid based on the 1D cellular automaton rules
 for (let i = 1; i < height; i++) {
   for (let j = 1; j < width - 1; j++) {
