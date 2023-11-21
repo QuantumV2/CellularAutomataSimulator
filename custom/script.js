@@ -58,6 +58,7 @@ if (randomrules) {
   surviveRules = getRandomArray(true);
   refractoryPeriod = randomNumber(50);
   neighboring = randomNumber(3);
+  neighboringSize = randomNumber(24)
   updateUrl();
   
 }
