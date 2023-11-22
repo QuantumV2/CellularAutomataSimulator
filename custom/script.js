@@ -156,7 +156,7 @@ function drawGrid() {
 
 function updateGrid() {
   if (paused) { return; }
-  const newGrid = new Array(gridSize);
+  const newGrid = [];
   for (let i = 0; i < gridSize; i++) {
     newGrid[i] = new Array(gridSize);
     for (let j = 0; j < gridSize; j++) {
