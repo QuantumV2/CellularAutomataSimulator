@@ -77,9 +77,9 @@ let paused = false;
 let activated = false;
 
 function createGrid() {
-  const grid = new Array(gridSize);
+  const grid = [];
   for (let i = 0; i < gridSize; i++) {
-    grid[i] = new Array(gridSize);
+    grid[i] = new Int8Array(gridSize);
     for (let j = 0; j < gridSize; j++) {
       if (i != gridSize / 2 && j != gridSize / 2 || !setCenter) {
         grid[i][j] = randomize ? (Math.random() > 0.5 ? 1 : 0) : 0;
@@ -158,7 +158,7 @@ function updateGrid() {
   if (paused) { return; }
   const newGrid = [];
   for (let i = 0; i < gridSize; i++) {
-    newGrid[i] = new Array(gridSize);
+    newGrid[i] = new Int8Array(gridSize);
     for (let j = 0; j < gridSize; j++) {
       //if (grid[i][j] < 0) { break; }
       const neighbors = countNeighbors(i, j);
