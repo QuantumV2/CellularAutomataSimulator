@@ -27,6 +27,11 @@ let starwarsRuleset = urlParams.get('starwars')?.toLowerCase() === "true" || fal
 let activeColor = urlParams.get('activecolor') || "000000";
 let inactiveColor = urlParams.get('inactivecolor') || "FFFFFF";
 let refractoryColor = urlParams.get('refractorycolor') || "000000";
+let neighborhoodPattern = urlParams.get('neighborhoodPattern')?.split("-").map(subStr => subStr.split("_").map(Number)) || [
+  [1, 1, 1],
+  [1, 0, 1],
+  [1, 1, 1],
+];
 let isDrawing = false;
 let prevCellX = -1;
 let prevCellY = -1;
@@ -41,6 +46,10 @@ refractoryColor = "#" + refractoryColor;
 updateUrl();
 
 
+if(neighborhoodPattern == undefined || neighborhoodPattern == null)
+{
+  updateNeighboring();
+}
 
 
 if (randomColor) {
@@ -186,25 +195,70 @@ function updateGrid() {
 
 function countNeighbors(x, y) {
   let count = 0;
+
   for (let i = -neighboringSize; i <= neighboringSize; i++) {
     for (let j = -neighboringSize; j <= neighboringSize; j++) {
-      if (i === 0 && j === 0 && neighboring !== 1) continue;
+      /*if (i === 0 && j === 0 && neighboring !== 1) continue;
       if (i === j && neighboring === 2) continue;
-      if (Math.abs(i) + Math.abs(j) > neighboringSize && neighboring === 3) continue; // Neumann neighboring
+      if (Math.abs(i) + Math.abs(j) > neighboringSize && neighboring === 3) continue; // Neumann neighboring*/
+
       const neighborX = (x + i + gridSize) % gridSize;
       const neighborY = (y + j + gridSize) % gridSize;
-      count += grid[neighborX][neighborY] === 1;
+
+      if (neighborhoodPattern[i + 1][j + 1] != 0)
+      {
+      count += grid[neighborX][neighborY] == 1;
+      }
     }
   }
+
   return count;
 }
 
+function updateNeighboring()
+{
+  switch (neighboring) {
+    case 0:
+      neighborhoodPattern = [
+        [1, 1, 1],
+        [1, 0, 1],
+        [1, 1, 1],
+      ];
+      break;
+
+    case 1:
+      neighborhoodPattern = [
+        [1, 1, 1],
+        [1, 1, 1],
+        [1, 1, 1],
+      ];
+      break;
+
+    case 2:
+      neighborhoodPattern = [
+        [0, 1, 1],
+        [1, 0, 1],
+        [1, 1, 0],
+      ];
+      break;
+
+    case 3:
+      neighborhoodPattern = [
+        [0, 1, 0],
+        [1, 0, 1],
+        [0, 1, 0],
+      ];
+      break;
+  }
+}
+
 function updateUrl() {
-  
+
   urlParams.set('birth', birthRules.join('-'));
   urlParams.set('survive', surviveRules.join('-'));
   urlParams.set('refractory', refractoryPeriod);
   urlParams.set('neighboring', neighboring);
+  urlParams.set('neighborhoodPattern', neighborhoodPattern.join("-").replaceAll(",", "_"));
   urlParams.set('neighboringsize', neighboringSize);
   birthTextbox.value = birthRules.join(',');
   surviveTextbox.value = surviveRules.join(',');
@@ -235,6 +289,7 @@ surviveTextbox.addEventListener("change", (event) => {
 });
 neighborhoodTextbox.addEventListener('change', function() {
   neighboring = parseInt(this.value);
+  updateNeighboring();
   updateUrl();
 });
 neighboringSizeTextbox.addEventListener('change', function() {
