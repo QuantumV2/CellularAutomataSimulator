@@ -205,7 +205,7 @@ function countNeighbors(x, y) {
       const neighborX = (x + i + gridSize) % gridSize;
       const neighborY = (y + j + gridSize) % gridSize;
 
-      if (neighborhoodPattern[j + 1][i + 1] != 0)
+      if (neighborhoodPattern[i + 1][j + 1] != 0)
       {
       count += grid[neighborX][neighborY] == 1;
       }
