@@ -33,7 +33,7 @@ let neighborhoodPattern = urlParams.get('neighborhoodPattern')?.split("-").map(s
   [1, 0, 1],
   [1, 1, 1],
 ];
-let oldNeighboring = urlParams.get('oldNeighboring')?.toLowerCase() == "true" || true;
+let oldNeighboring = false;
 let isDrawing = false;
 let prevCellX = -1;
 let prevCellY = -1;
@@ -230,6 +230,7 @@ function countNeighbors(x, y) {
 
 function updateNeighboring()
 {
+
   switch (neighboring) {
     case 0:
       neighborhoodPattern = [
@@ -266,7 +267,9 @@ function updateNeighboring()
 }
 
 function updateUrl() {
-
+  if (neighboringSize > 1) {
+    oldNeighboring = true
+  }
   urlParams.set('birth', birthRules.join('-'));
   urlParams.set('survive', surviveRules.join('-'));
   urlParams.set('refractory', refractoryPeriod);
