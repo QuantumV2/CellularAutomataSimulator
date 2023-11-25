@@ -33,6 +33,7 @@ let neighborhoodPattern = urlParams.get('neighborhoodPattern')?.split("-").map(s
   [1, 0, 1],
   [1, 1, 1],
 ];
+let oldNeighboring = urlParams.get('oldNeighboring')?.toLowerCase() == "true" || true;
 let isDrawing = false;
 let prevCellX = -1;
 let prevCellY = -1;
@@ -199,16 +200,27 @@ function countNeighbors(x, y) {
 
   for (let i = -neighboringSize; i <= neighboringSize; i++) {
     for (let j = -neighboringSize; j <= neighboringSize; j++) {
-      /*if (i === 0 && j === 0 && neighboring !== 1) continue;
-      if (i === j && neighboring === 2) continue;
-      if (Math.abs(i) + Math.abs(j) > neighboringSize && neighboring === 3) continue; // Neumann neighboring*/
+      if(!oldNeighboring)
+      {
+        if (i === 0 && j === 0 && neighboring !== 1) continue;
+        if (i === j && neighboring === 2) continue;
+        if (Math.abs(i) + Math.abs(j) > neighboringSize && neighboring === 3) continue; // Neumann neighboring
+      }
 
       const neighborX = (x + i + gridSize) % gridSize;
       const neighborY = (y + j + gridSize) % gridSize;
 
-      if (neighborhoodPattern[j + 1][i + 1] != 0)
+
+      if(!oldNeighboring)
       {
-      count += grid[neighborX][neighborY] == 1;
+        if (neighborhoodPattern[clamp(j + 1, 0, neighborhoodPattern.length)][clamp(i + 1, 0, neighborhoodPattern.length)] != 0)
+        {
+        count += grid[neighborX][neighborY] == 1;
+        }
+      }
+      else
+      {
+        count += grid[neighborX][neighborY] == 1;
       }
     }
   }
@@ -343,6 +355,8 @@ function handleDrawing(event) {
     drawGrid();
   }
 }
+
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
 function drawLine(x0, y0, x1, y1) {
   if(refractoryPeriod === 0)
