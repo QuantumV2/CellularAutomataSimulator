@@ -5,7 +5,6 @@ const surviveTextbox = document.getElementById("surviveTextbox");
 const neighborhoodTextbox = document.getElementById("neighboring");
 const refractoryTextbox = document.getElementById("refractoryTextbox");
 const neighboringSizeTextbox = document.getElementById("neighboringSizeTextbox");
-const neighborhoodPatternTextbox = document.getElementById("neighborhoodPatternTextbox");
 const ctx = canvas.getContext('2d');
 const cellSize = 10;
 
@@ -264,7 +263,6 @@ function updateUrl() {
   birthTextbox.value = birthRules.join(',');
   surviveTextbox.value = surviveRules.join(',');
   neighborhoodTextbox.value = "" + neighboring;
-  neighborhoodPatternTextbox.value = neighborhoodPattern.join("-").replaceAll(",", "_");
   refractoryTextbox.value = refractoryPeriod;
   neighboringSizeTextbox.value = neighboringSize;
   document.getElementById('color-picker').value = activeColor;
@@ -302,10 +300,7 @@ refractoryTextbox.addEventListener('change', function() {
   refractoryPeriod = this.value;
   updateUrl();
 });
-neighborhoodPatternTextbox.addEventListener('change', function () {
-  neighborhoodPattern = this.value?.split("-").map(subStr => subStr.split("_").map(Number));
-  updateUrl();
-});
+
 
 canvas.addEventListener('mousedown', function (event) {
   isDrawing = true;
