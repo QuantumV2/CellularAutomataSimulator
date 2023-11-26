@@ -274,6 +274,7 @@ function updateUrl() {
   /*if (neighboringSize > 1) {
     oldNeighboring = true
   }*/
+  updateNeighboring();
   urlParams.set('birth', birthRules.join('-'));
   urlParams.set('survive', surviveRules.join('-'));
   urlParams.set('refractory', refractoryPeriod);
@@ -310,12 +311,10 @@ surviveTextbox.addEventListener("change", (event) => {
 });
 neighborhoodTextbox.addEventListener('change', function() {
   neighboring = parseInt(this.value);
-  updateNeighboring();
   updateUrl();
 });
 neighboringSizeTextbox.addEventListener('change', function() {
   neighboringSize = this.value;
-  updateNeighboring();
   updateUrl();
 });
 refractoryTextbox.addEventListener('change', function() {
@@ -324,7 +323,6 @@ refractoryTextbox.addEventListener('change', function() {
 });
 neighborhoodPatternTextbox.addEventListener('change', function () {
   neighborhoodPattern = this.value?.split("-").map(subStr => subStr.split("_").map(Number));
-  updateNeighboring();
   updateUrl();
 });
 
