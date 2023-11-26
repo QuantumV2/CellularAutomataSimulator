@@ -232,20 +232,21 @@ function calculateDiagonal(size) {
 }
 
 function calculateVonNeumann(size) {
-  var resultArray = new Array((size * 2) + 1).fill(0).map(() => new Array((size * 2) + 1).fill(1));
-  for (let i = 0; i <= size; i++) {
-    for (let j = 0; j <= size; j++) {
-      if (i + j > size) {
-        resultArray[size + i][size + j] = 0;
-        resultArray[size - i][size + j] = 0;
-        resultArray[size + i][size - j] = 0;
-        resultArray[size - i][size - j] = 0;
+  const resultArray = new Array((size * 2) + 1).fill(0).map(() => new Array((size * 2) + 1).fill(0));
+
+  for (let i = 0; i <= size * 2; i++) {
+    for (let j = 0; j <= size * 2; j++) {
+      if (Math.abs(i - size) + Math.abs(j - size) <= size) {
+        resultArray[i][j] = 1;
       }
     }
   }
-  resultArray[size][size] = 0;
+
+  resultArray[size][size] = 0; // Setting the central cell to 0
+
   return resultArray;
 }
+
 
 function updateNeighboring()
 {
