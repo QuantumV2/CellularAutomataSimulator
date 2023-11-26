@@ -249,7 +249,6 @@ function calculateVonNeumann(size) {
 
 function updateNeighboring()
 {
-
   switch (neighboring) {
     case 0:
       neighborhoodPattern = calculateMoore(neighboringSize);
@@ -267,6 +266,7 @@ function updateNeighboring()
       neighborhoodPattern = calculateVonNeumann(neighboringSize);
       break;
   }
+  updateUrl();
 }
 
 function updateUrl() {
@@ -310,12 +310,10 @@ surviveTextbox.addEventListener("change", (event) => {
 neighborhoodTextbox.addEventListener('change', function() {
   neighboring = parseInt(this.value);
   updateNeighboring();
-  updateUrl();
 });
 neighboringSizeTextbox.addEventListener('change', function() {
   neighboringSize = this.value;
   updateNeighboring();
-  updateUrl();
 });
 refractoryTextbox.addEventListener('change', function() {
   refractoryPeriod = this.value;
@@ -324,7 +322,6 @@ refractoryTextbox.addEventListener('change', function() {
 neighborhoodPatternTextbox.addEventListener('change', function () {
   neighborhoodPattern = this.value?.split("-").map(subStr => subStr.split("_").map(Number));
   updateNeighboring();
-  updateUrl();
 });
 
 canvas.addEventListener('mousedown', function (event) {
