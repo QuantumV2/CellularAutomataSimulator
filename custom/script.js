@@ -28,7 +28,7 @@ let starwarsRuleset = urlParams.get('starwars')?.toLowerCase() === "true" || fal
 let activeColor = urlParams.get('activecolor') || "000000";
 let inactiveColor = urlParams.get('inactivecolor') || "FFFFFF";
 let refractoryColor = urlParams.get('refractorycolor') || "000000";
-let neighborhoodPattern = urlParams.get('neighborhoodPattern')?.split("-").map(subStr => subStr.split("_").map(Number)) || calculateMoore(neighboringSize);
+let neighborhoodPattern = urlParams.get('neighborhoodPattern')?.split("-").map(subStr => subStr.split("_").map(Number)) || getRuleFromId(neighboring);
 let oldNeighboring = false;
 let isDrawing = false;
 let prevCellX = -1;
@@ -42,12 +42,6 @@ inactiveColor = "#" + inactiveColor;
 refractoryColor = "#" + refractoryColor;
 
 updateUrl();
-
-
-if(neighborhoodPattern == undefined || neighborhoodPattern == null)
-{
-  updateNeighboring();
-}
 
 
 if (randomColor) {
@@ -106,6 +100,21 @@ function hexToRgb(hex) {
     g: parseInt(result[2], 16),
     b: parseInt(result[3], 16)
   } : null;
+}
+
+function getRuleFromId(id)
+{
+  switch(id)
+  {
+    case 0:
+      return calculateMoore(neighboringSize)
+    case 1:
+      return calculateSelfNeighborhood(neighboringSize)
+    case 2:
+      return calculateDiagonal(neighboringSize)
+    case 3:
+      return calculateVonNeumann(neighboringSize)
+  }
 }
 
 function getRandomArray(includeZero) {
@@ -274,7 +283,6 @@ function updateUrl() {
   /*if (neighboringSize > 1) {
     oldNeighboring = true
   }*/
-  updateNeighboring();
   urlParams.set('birth', birthRules.join('-'));
   urlParams.set('survive', surviveRules.join('-'));
   urlParams.set('refractory', refractoryPeriod);
@@ -311,10 +319,13 @@ surviveTextbox.addEventListener("change", (event) => {
 });
 neighborhoodTextbox.addEventListener('change', function() {
   neighboring = parseInt(this.value);
+  updateNeighboring();
   updateUrl();
+  
 });
 neighboringSizeTextbox.addEventListener('change', function() {
   neighboringSize = this.value;
+  updateNeighboring();
   updateUrl();
 });
 refractoryTextbox.addEventListener('change', function() {
