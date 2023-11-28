@@ -24,6 +24,7 @@ let randomrules = urlParams.get('randomrules')?.toLowerCase() === "true" || fals
 let refractoryPeriod = parseInt(urlParams.get('refractory')) || 0;
 let randomRefractoryColor = urlParams.get('randrefractoryclr')?.toLowerCase() === "true" || false;
 let randomColor = urlParams.get('randomcolor')?.toLowerCase() === "true" || false;
+let wrap = urlParams.get('wrap')?.toLowerCase() === "true";
 let starwarsRuleset = urlParams.get('starwars')?.toLowerCase() === "true" || false;
 let activeColor = urlParams.get('activecolor') || "000000";
 let inactiveColor = urlParams.get('inactivecolor') || "FFFFFF";
@@ -206,19 +207,26 @@ function countNeighbors(x, y) {
   for (let i = -neighboringSize; i <= neighboringSize; i++) {
     for (let j = -neighboringSize; j <= neighboringSize; j++) {
 
-      const neighborX = (x + i + gridSize) % gridSize;
-      const neighborY = (y + j + gridSize) % gridSize;
+      let neighborX = x + i;
+      let neighborY = y + j;
 
-      if (neighborhoodPattern[clamp(j + 1, 0, neighborhoodPattern.length)][clamp(i + 1, 0, neighborhoodPattern.length)] != 0)
-      {
-      count += grid[neighborX][neighborY] == 1;
+      if (!wrap) {
+        if (neighborX < 0 || neighborX >= gridSize || neighborY < 0 || neighborY >= gridSize) {
+          continue;
+        }
+      } else {
+        neighborX = (neighborX + gridSize) % gridSize;
+        neighborY = (neighborY + gridSize) % gridSize;
+      }
+
+      if (neighborhoodPattern[clamp(j + 1, 0, neighborhoodPattern.length)][clamp(i + 1, 0, neighborhoodPattern.length)] != 0) {
+        count += grid[neighborX][neighborY] == 1;
       }
     }
   }
 
   return count;
 }
-
 
 function calculateMoore(size)
 {
