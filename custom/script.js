@@ -23,7 +23,7 @@ let size = parseInt(urlParams.get('size')) || canvas.width;
 let randomrules = urlParams.get('randomrules')?.toLowerCase() === "true" || false;
 let refractoryPeriod = parseInt(urlParams.get('refractory')) || 0;
 let randomRefractoryColor = urlParams.get('randrefractoryclr')?.toLowerCase() === "true" || false;
-let randomColor = urlParams.get('randomcolor')?.toLowerCase() === "true" || false;
+let randomColor = urlParams.get('randomcolor')?.toLowerCase() === "true" || true;
 let wrap = urlParams.get('wrap')?.toLowerCase() === "true";
 let starwarsRuleset = urlParams.get('starwars')?.toLowerCase() === "true" || false;
 let activeColor = urlParams.get('activecolor') || "000000";
