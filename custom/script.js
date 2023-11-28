@@ -24,7 +24,7 @@ let randomrules = urlParams.get('randomrules')?.toLowerCase() === "true" || fals
 let refractoryPeriod = parseInt(urlParams.get('refractory')) || 0;
 let randomRefractoryColor = urlParams.get('randrefractoryclr')?.toLowerCase() === "true" || false;
 let randomColor = urlParams.get('randomcolor')?.toLowerCase() === "true" || false;
-let wrap = urlParams.get('wrap')?.toLowerCase() === "true";
+let wrap = urlParams.get('wrap')?.toLowerCase() !== "false";
 let starwarsRuleset = urlParams.get('starwars')?.toLowerCase() === "true" || false;
 let activeColor = urlParams.get('activecolor') || "000000";
 let inactiveColor = urlParams.get('inactivecolor') || "FFFFFF";
@@ -35,7 +35,6 @@ let isDrawing = false;
 let prevCellX = -1;
 let prevCellY = -1;
 
-wrap = wrap ?? true;
 
 let randWhiteColor = "rgba(" + randomNumber(255) + ", " + randomNumber(255) + ", " + randomNumber(255) + ", 1)";
 let randBlackColor = "rgba(" + randomNumber(255) + ", " + randomNumber(255) + ", " + randomNumber(255) + ", 1)";
@@ -297,6 +296,7 @@ function updateUrl() {
   urlParams.set('survive', surviveRules.join('-'));
   urlParams.set('refractory', refractoryPeriod);
   urlParams.set('neighboring', neighboring);
+  urlParams.set('wrap', wrap);
   urlParams.set('neighborhoodPattern', neighborhoodPattern.join("-").replaceAll(",", "_"));
   urlParams.set('neighboringsize', neighboringSize);
   birthTextbox.value = birthRules.join(',');
