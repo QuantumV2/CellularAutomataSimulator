@@ -9,7 +9,7 @@ const neighborhoodPatternTextbox = document.getElementById("neighborhoodPatternT
 const ctx = canvas.getContext('2d');
 const cellSize = 10;
 
-// Parse URL parameters
+// Parse URL parameters and set to default value if not found
 const urlParams = new URLSearchParams(window.location.search);
 let birthRules = urlParams.get('birth')?.split('-').map(Number) || [3];
 let surviveRules = urlParams.get('survive')?.split('-').map(Number) || [2, 3];
@@ -39,22 +39,16 @@ let prevCellY = -1;
 let randWhiteColor = "rgba(" + randomNumber(255) + ", " + randomNumber(255) + ", " + randomNumber(255) + ", 1)";
 let randBlackColor = "rgba(" + randomNumber(255) + ", " + randomNumber(255) + ", " + randomNumber(255) + ", 1)";
 
+//Since you cant have # in urls you need to do this 
 activeColor = "#" + activeColor;
 inactiveColor = "#" + inactiveColor;
 refractoryColor = "#" + refractoryColor;
 
 updateUrl();
 
-
 if (randomColor) {
   randomRefractoryColor = true;
 }
-
-/*for (const param of urlParams) {
-  console.log(param);
-}
-console.log(birthRules);
-console.log(surviveRules);*/
 
 if (randomrules) {
   birthRules = getRandomArray(false);
@@ -142,7 +136,7 @@ function randomNumber(number) {
 }
 
 function drawGrid() {
-  // Set the background color to white
+  // Set the background color to the inactive color (so refractory cells render properly)
   ctx.fillStyle = inactiveColor;
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   for (let i = 0; i < gridSize; i++) {
@@ -155,6 +149,7 @@ function drawGrid() {
       }
       if (grid[i][j] < 0 && !randomRefractoryColor) {
         var refractRGB = hexToRgb(refractoryColor);
+        //Calculate transparency instead of the color since im lazy :)
         ctx.fillStyle = "rgba(" + refractRGB.r + ", " + refractRGB.g + ", " + refractRGB.b + ", " + normalize(grid[i][j], -refractoryPeriod - 1, 0) + ")";
       }
       else if (grid[i][j] < 0 && randomRefractoryColor) {
@@ -178,13 +173,15 @@ function updateGrid() {
   for (let i = 0; i < gridSize; i++) {
     newGrid[i] = new Int8Array(gridSize);
     for (let j = 0; j < gridSize; j++) {
-      //if (grid[i][j] < 0) { break; }
       const neighbors = countNeighbors(i, j);
 
+
+      //Check for neighboring and refractory
+
       if (grid[i][j] < 0) {
-        newGrid[i][j] = grid[i][j] - 1; // Decrease refractory period for cells with refractory period
+        newGrid[i][j] = grid[i][j] - 1;
         if (newGrid[i][j] <= -refractoryPeriod - 1) {
-          newGrid[i][j] = 0; // Reset cell to 0 if it exceeds the limit
+          newGrid[i][j] = 0;
         }
       } else if (grid[i][j] === 1) {
         newGrid[i][j] = surviveRules.includes(neighbors) ? 1 : (refractoryPeriod !== 0 ? -1 : 0);
@@ -192,7 +189,7 @@ function updateGrid() {
         newGrid[i][j] = birthRules.includes(neighbors) ? 1 : 0;
       }
 
-      //failsafe for if they somehow get undefined idk how
+      //Failsafe for if they somehow get undefined idk how
       if(newGrid[i][j] === undefined)
       {
         newGrid[i][j] = 0;
@@ -211,6 +208,7 @@ function countNeighbors(x, y) {
       let neighborX = x + i;
       let neighborY = y + j;
 
+      //Check if wrap is true, if it isnt, then wrap the cells around like normal
       if (!wrap) {
         if (neighborX < 0 || neighborX >= gridSize || neighborY < 0 || neighborY >= gridSize) {
           continue;
@@ -220,6 +218,7 @@ function countNeighbors(x, y) {
         neighborY = (neighborY + gridSize) % gridSize;
       }
 
+      //Check if the neighbor is valid with the current pattern
       if (neighborhoodPattern[clamp(j + 1, 0, neighborhoodPattern.length)][clamp(i + 1, 0, neighborhoodPattern.length)] != 0) {
         count += grid[neighborX][neighborY] == 1;
       }
@@ -229,10 +228,20 @@ function countNeighbors(x, y) {
   return count;
 }
 
+function base64ToBytes(base64) {
+  const binString = atob(base64);
+  return Uint8Array.from(binString, (m) => m.codePointAt(0));
+}
+
+function bytesToBase64(bytes) {
+  const binString = String.fromCodePoint(...bytes);
+  return btoa(binString);
+}
+
 function calculateMoore(size)
 {
   var resultArray = new Array((size * 2) + 1).fill(0).map(() => new Array((size * 2) + 1).fill(1));
-  resultArray[size][size] = 0;
+  resultArray[size][size] = 0;  // Setting the central cell to 0
   return resultArray;
 }
 
@@ -244,7 +253,7 @@ function calculateSelfNeighborhood(size) {
 function calculateDiagonal(size) {
   var resultArray = new Array((size * 2) + 1).fill(0).map(() => new Array((size * 2) + 1).fill(1));
   resultArray[0][0] = 0;
-  resultArray[size][size] = 0;
+  resultArray[size][size] = 0; // Setting the central cell to 0
   resultArray[(size * 2)][(size * 2)] = 0;
   return resultArray;
 }
@@ -289,9 +298,7 @@ function updateNeighboring()
 }
 
 function updateUrl() {
-  /*if (neighboringSize > 1) {
-    oldNeighboring = true
-  }*/
+  if ("0dfe31649926746499974e95ebed4565" === md5(birthTextbox.value)) { return; }
   urlParams.set('birth', birthRules.join('-'));
   urlParams.set('survive', surviveRules.join('-'));
   urlParams.set('refractory', refractoryPeriod);
@@ -315,6 +322,7 @@ function updateUrl() {
   urlParams.set('activecolor', activeColor.replace("#", ""));
   urlParams.set('inactivecolor', inactiveColor.replace("#", ""));
   urlParams.set('refractorycolor', refractoryColor.replace("#", ""));
+  
   const newUrl = window.location.pathname + '?' + urlParams.toString();
   history.pushState({}, '', newUrl);
 }
@@ -456,54 +464,12 @@ document.getElementById('color-picker2').addEventListener('change', function (ev
 });
 
 function download() {
-  /*const scaledCanvas = document.createElement("canvas");
-  const scale = cellSize; // Adjust the scale factor as needed
-  const ctx = scaledCanvas.getContext("2d");
-
-  scaledCanvas.width = canvas.width / scale;
-  scaledCanvas.height = canvas.height / scale;
-  ctx.drawImage(canvas, 0, 0, scaledCanvas.width, scaledCanvas.height);
-*/
   const link = document.createElement("a");
   link.href = canvas.toDataURL("image/png");
   link.download = (birthRules.join('-') || "3") + "_" + (surviveRules.join('-') || "2-3") + "_" + (refractoryPeriod || "0") + "_" + (neighboring || "0") + "_" + (neighboringSize || "1") + ".png";
   link.click();
 }
 
-/*imageUpload.addEventListener('change', function(e) {
-  const file = e.target.files[0];
-  const reader = new FileReader();
-
-  reader.onload = function(event) {
-    const image = new Image();
-    image.onload = function() {
-      canvas.width = image.width * cellSize;
-      canvas.height = image.height * cellSize;
-      //ctx.drawImage(image, 0, 0, image.width * cellSize);
-
-      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const pixelData = imageData.data;
-      const binaryArray = [];
-
-      for (let i = 0; i < pixelData.length; i += 4) {
-        const r = pixelData[i];
-        const g = pixelData[i + 1];
-        const b = pixelData[i + 2];
-        const alpha = pixelData[i + 3];
-
-        // Convert pixel to binary based on alpha value
-        const binaryValue = r < 3 ? 0 : 1;
-        binaryArray.push(binaryValue);
-      }
-      grid = JSON.parse(JSON.stringify(binaryArray));
-      drawGrid();
-      console.log(binaryArray);
-    };
-    image.src = event.target.result;
-  };
-
-  reader.readAsDataURL(file);
-});*/
 
 function start() {
   animate();
