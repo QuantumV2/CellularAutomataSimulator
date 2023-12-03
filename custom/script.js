@@ -25,7 +25,6 @@ let refractoryPeriod = parseInt(urlParams.get('refractory')) || 0;
 let randomRefractoryColor = urlParams.get('randrefractoryclr')?.toLowerCase() === "true" || false;
 let randomColor = urlParams.get('randomcolor')?.toLowerCase() === "true" || false;
 let wrap = urlParams.get('wrap')?.toLowerCase() !== "false";
-let starwarsRuleset = urlParams.get('starwars')?.toLowerCase() === "true" || false;
 let activeColor = urlParams.get('activecolor') || "000000";
 let inactiveColor = urlParams.get('inactivecolor') || "FFFFFF";
 let refractoryColor = urlParams.get('refractorycolor') || "000000";
