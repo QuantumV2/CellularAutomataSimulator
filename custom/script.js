@@ -55,6 +55,7 @@ if (randomrules) {
   refractoryPeriod = randomNumber(50);
   neighboring = randomNumber(3);
   neighboringSize = randomNumber(24)
+  neighborhoodPattern = getRuleFromId(neighboring)
   updateUrl();
   
 }
